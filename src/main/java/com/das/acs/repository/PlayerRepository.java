@@ -10,9 +10,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-@Repository // Spring annotation for component scanning
+@Repository
 public class PlayerRepository {
-    // Thread-safe in-memory storage
     private final Map<String, Player> players = new ConcurrentHashMap<>();
 
     public Player save(Player player) {
@@ -21,7 +20,6 @@ public class PlayerRepository {
     }
 
     public Player findOrCreate(String username) {
-        // First try to find by username (case-insensitive)
         Optional<Player> existing = players.values().stream()
                 .filter(p -> p.getUsername().equalsIgnoreCase(username))
                 .findFirst();
@@ -30,7 +28,6 @@ public class PlayerRepository {
             return existing.get();
         }
 
-        // Create new player if not found
         Player newPlayer = new Player(username.trim());
         return save(newPlayer);
     }

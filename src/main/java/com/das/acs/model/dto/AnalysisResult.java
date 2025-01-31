@@ -8,7 +8,6 @@ public class AnalysisResult {
         this.status = status;
         this.analysis = analysis;
     }
-    // Getters and setters
 
     public String getAnalysis() {
         return analysis;

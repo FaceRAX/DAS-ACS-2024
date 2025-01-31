@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 @Repository
 public class GameRepository {
-    // Simulated database/store
     private final Map<String, Game> games = new ConcurrentHashMap<>();
 
     public Game save(Game game) {

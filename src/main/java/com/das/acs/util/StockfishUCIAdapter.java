@@ -14,7 +14,6 @@ public class StockfishUCIAdapter {
     private BufferedReader reader;
     private BufferedWriter writer;
 
-    // Start Stockfish engine
     public void startEngine(String enginePath) throws IOException {
         stockfishProcess = new ProcessBuilder(enginePath).start();
         reader = new BufferedReader(new InputStreamReader(stockfishProcess.getInputStream()));
@@ -23,7 +22,6 @@ public class StockfishUCIAdapter {
         waitForResponse("uciok"); // Wait until Stockfish is ready
     }
 
-    // Send UCI command to Stockfish
     public void sendCommand(String command) throws IOException {
         writer.write(command + "\n");
         writer.flush();
@@ -46,7 +44,6 @@ public class StockfishUCIAdapter {
         sendCommand("d");
         String response = waitForResponse("Checkers");
 
-        // Parse FEN from Stockfish's response
         Pattern fenPattern = Pattern.compile("Fen: (\\S+)");
         Matcher matcher = fenPattern.matcher(response);
         if (matcher.find()) {
@@ -71,7 +68,6 @@ public class StockfishUCIAdapter {
         return bestMove.contains("(none)"); // Stockfish returns "bestmove (none)" for checkmate
     }
 
-    // Get all legal moves for the current position
     public List<String> getLegalMoves(String fen) throws IOException {
         sendCommand("position fen " + fen);
         sendCommand("go perft 1");
@@ -79,7 +75,6 @@ public class StockfishUCIAdapter {
         return parseLegalMoves(response);
     }
 
-    // Parse Stockfish's "perft" output to extract legal moves
     private List<String> parseLegalMoves(String response) {
         List<String> moves = new ArrayList<>();
         String[] lines = response.split("\n");
@@ -127,7 +122,6 @@ public class StockfishUCIAdapter {
         return analysis.toString();
     }
 
-    // Shut down Stockfish
     public void quit() throws IOException {
         sendCommand("quit");
         stockfishProcess.destroy();

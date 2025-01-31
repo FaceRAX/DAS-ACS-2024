@@ -36,22 +36,18 @@ public class PGNService {
     }
 
     public Game parsePGN(String pgnText) throws IOException {
-        // Parse metadata (simplified example)
         String[] parts = pgnText.split("\n\n");
         String metadata = parts[0];
         String movesSan = parts[1].replaceAll("\\d+\\.", "").trim(); // Remove move numbers
 
-        // Extract players from PGN headers
         String white = extractTag(metadata, "White");
         String black = extractTag(metadata, "Black");
         Player whitePlayer = playerRepository.findOrCreate(white);
         Player blackPlayer = playerRepository.findOrCreate(black);
 
-        // Create a new game
         Game game = gameService.createGame(whitePlayer.getId(), blackPlayer.getId());
         gameRepository.save(game);
 
-        // Apply moves using Stockfish
         String fen = game.getCurrentFEN();
         for (String sanMove : movesSan.split(" ")) {
             String uciMove = convertSanToUCI(fen, sanMove);
@@ -70,7 +66,6 @@ public class PGNService {
         return matcher.find() ? matcher.group(1) : "Unknown";
     }
 
-    // Convert SAN to UCI using Stockfish
     private String convertSanToUCI(String fen, String sanMove) throws IOException {
         stockfish.sendCommand("position fen " + fen);
         stockfish.sendCommand("go depth 1");

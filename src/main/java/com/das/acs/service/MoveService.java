@@ -22,7 +22,7 @@ public class MoveService {
     private final PlayerRepository playerRepository;
     private final ChessLogic chessLogic;
 
-    @Autowired // Constructor injection (recommended by Spring)
+    @Autowired
     public MoveService(
             GameRepository gameRepository,
             PlayerRepository playerRepository,
@@ -33,19 +33,16 @@ public class MoveService {
         this.chessLogic = chessLogic;
     }
 
-    // In MoveService.java
     public void addMoveToGame(String gameId, String uci, String playerId) {
         Game game = gameRepository.findById(gameId);
         Player player = playerRepository.findById(playerId)
                 .orElseThrow(() -> new IllegalArgumentException("Player not found: " + playerId));
 
-        // Validate move
         String currentFEN = game.getCurrentFEN();
         if (!chessLogic.validateMove(currentFEN, uci)) {
             throw new IllegalArgumentException("Invalid move: " + uci);
         }
 
-        // Apply move and update FEN
         try {
             String newFEN = chessLogic.applyMoveToFEN(currentFEN, uci);
             Move move = new Move(uci, player);
@@ -53,7 +50,6 @@ public class MoveService {
             game.setCurrentFEN(newFEN);
             gameRepository.save(game);
 
-            // Check for game end
             if (chessLogic.isCheckmate(newFEN)) {
                 game.setState(new CheckmateState());
             }

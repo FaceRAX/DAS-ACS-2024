@@ -4,16 +4,13 @@ public class MoveRequest {
     private String uci;       // Move in UCI
     private String playerId;  // ID of the player making the move
 
-    // Default constructor (required for JSON deserialization)
     public MoveRequest() {}
 
-    // Constructor with fields
     public MoveRequest(String uci, String playerId) {
         this.uci = uci;
         this.playerId = playerId;
     }
 
-    // Getters and setters
     public String getUci() {
         return uci;
     }

@@ -24,7 +24,7 @@ public class StockfishConfig {
         if (!resource.exists()) {
             throw new FileNotFoundException(
                     "Stockfish not found at: " + stockfishPath +
-                            ". Download it from https://stockfishchess.org/download/ and update the path."
+                    ". Download it from https://stockfishchess.org/download/ and update the path."
             );
         }
 

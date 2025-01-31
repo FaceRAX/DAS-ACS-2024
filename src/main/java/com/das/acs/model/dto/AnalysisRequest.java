@@ -4,7 +4,6 @@ public class AnalysisRequest {
     private String fen;      // FEN of the position to analyze
     private int depth = 18;  // default analysis depth
 
-    // Getters and Setters
     public String getFen() {
         return fen;
     }

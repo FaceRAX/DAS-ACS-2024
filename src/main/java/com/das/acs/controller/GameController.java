@@ -43,6 +43,4 @@ public class GameController {
     ) {
         return gameService.getFilteredGames(status, player, page, limit);
     }
-
-    // Sub-resource for moves (mapped in a separate MoveController)
 }

@@ -20,18 +20,15 @@ public class UCIEngineAdapter {
         writer = new BufferedWriter(new OutputStreamWriter(engineProcess.getOutputStream()));
         executor = Executors.newSingleThreadExecutor();
 
-        // Initialize UCI protocol
         sendCommand("uci");
         waitForResponse("uciok");
     }
 
-    // Send UCI command to the engine
     public void sendCommand(String command) throws IOException {
         writer.write(command + "\n");
         writer.flush();
     }
 
-    // Wait for a specific response (e.g., "uciok")
     private void waitForResponse(String expected) {
         try {
             String line;
@@ -43,7 +40,6 @@ public class UCIEngineAdapter {
         }
     }
 
-    // Validate a move using UCI
     public boolean validateMove(String fen, String sanMove) {
         try {
             sendCommand("position fen " + fen);
@@ -55,7 +51,6 @@ public class UCIEngineAdapter {
         }
     }
 
-    // Analyze a position (asynchronous)
     public CompletableFuture<String> analyzePosition(String fen, int depth) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -68,7 +63,6 @@ public class UCIEngineAdapter {
         }, executor);
     }
 
-    // Read "bestmove" from engine output
     private String readBestMove() throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {
@@ -85,7 +79,7 @@ public class UCIEngineAdapter {
             executor.shutdown();
             engineProcess.waitFor();
         } catch (Exception e) {
-            // Handle cleanup errors
+
         }
     }
 }

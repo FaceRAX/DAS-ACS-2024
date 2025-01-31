@@ -7,5 +7,11 @@ public class AnalysisResponse {
         this.operationId = operationId;
     }
 
-    // Getter
+    public String getOperationId() {
+        return operationId;
+    }
+
+    public void setOperationId(String operationId) {
+        this.operationId = operationId;
+    }
 }

@@ -8,7 +8,6 @@ import java.util.List;
 public class DataExport {
     private List<Player> players;
     private List<Game> games;
-    // Getters and setters
 
     public List<Player> getPlayers() {
         return players;

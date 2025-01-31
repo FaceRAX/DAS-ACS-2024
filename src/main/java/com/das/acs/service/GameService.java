@@ -20,7 +20,6 @@ public class GameService {
     private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
 
-    // Inject dependencies via constructor
     @Autowired
     public GameService(
             GameFactory gameFactory,
