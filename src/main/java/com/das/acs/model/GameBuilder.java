@@ -23,8 +23,10 @@ public class GameBuilder {
     }
 
     public Game build() {
-        if (playerWhite == null || playerBlack == null || chessLogic == null) {
+        if (playerWhite == null || playerBlack == null) {
             throw new IllegalStateException("Both players must be set!");
+        } else if (chessLogic == null) {
+            throw new IllegalStateException("Chess logic not set!");
         }
         return new Game(playerWhite, playerBlack, chessLogic);
     }
