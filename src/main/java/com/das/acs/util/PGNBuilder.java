@@ -15,7 +15,6 @@ public class PGNBuilder {
         pgn.append("[White \"").append(game.getPlayerWhite().getUsername()).append("\"]\n");
         pgn.append("[Black \"").append(game.getPlayerBlack().getUsername()).append("\"]\n");
         pgn.append("\n");
-        // Add moves in SAN format
         game.getMoves().forEach(move -> pgn.append(move.getUci()).append(" "));
         return pgn.toString();
     }

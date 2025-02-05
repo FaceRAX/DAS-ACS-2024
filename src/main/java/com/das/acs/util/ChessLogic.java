@@ -25,16 +25,45 @@ public class ChessLogic {
         }
     }
 
+    public List<String> getLegalMoves(String fen) {
+        try {
+            return engine.getLegalMoves(fen);
+        } catch (IOException e) {
+            throw new ChessEngineException("Failed to validate move", e);
+        }
+    }
+
+    public void sendCommand(String command) {
+        try {
+            engine.sendCommand(command);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String waitForResponse(String expected) {
+        try {
+            return engine.waitForResponse(expected);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String applyMoveToFEN(String fen, String uciMove) throws IOException {
         engine.sendCommand("position fen " + fen + " moves " + uciMove);
         engine.sendCommand("d");
         String response = engine.waitForResponse("Fen:");
         // Extract FEN from response ("Fen: rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1")
-        return response.split("Fen: ")[1].trim().split(" ")[0]; // Get only the FEN position
+        String fenResponse = response.split("Fen: ")[1].replace("\n", "");
+        return fenResponse;//.trim().split(" ")[0]; // Get only the FEN position
     }
 
     public boolean isCheckmate(String fen) throws IOException {
         return engine.isCheckmate(fen);
+    }
+
+    public boolean isStalemate(String fen) throws IOException {
+        return engine.isStalemate(fen);
     }
 
     public void shutdown() throws IOException {

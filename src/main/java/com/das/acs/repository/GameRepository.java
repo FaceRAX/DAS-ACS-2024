@@ -3,6 +3,8 @@ package com.das.acs.repository;
 import com.das.acs.exceptions.NotFoundException;
 import com.das.acs.model.Game;
 import com.das.acs.model.Player;
+import com.das.acs.model.state.WaitingState;
+import com.das.acs.util.ChessLogic;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -34,9 +36,41 @@ public class GameRepository {
         games.clear();
     }
 
-    public List<Game> saveAll(List<Game> games) {
+    public List<Game> saveAll(List<Game> games, List<Player> players, ChessLogic chessLogic) {
+        setPlayerReferences(games, players, chessLogic);
+        setGameLogicReferences(games, chessLogic);
         return games.stream()
                 .map(this::save)
                 .collect(Collectors.toList());
+    }
+
+    private List<Game> setPlayerReferences(List<Game> games, List<Player> players, ChessLogic chessLogic) {
+
+        games.forEach(game -> {
+            players.forEach(player -> {
+                if(game.getPlayerWhite().getId().equals(player.getId())) {
+                    game.setPlayerWhite(player);
+                }
+                else if(game.getPlayerBlack().getId().equals(player.getId())) {
+                    game.setPlayerBlack(player);
+                }
+            });
+            game.getMoves().forEach(move -> {
+                players.forEach(player -> {
+                    if(move.getPlayer().getId().equals(player.getId())) {
+                        move.setPlayer(player);
+                    }
+                });
+            });
+        });
+        return games;
+    }
+
+    private List<Game> setGameLogicReferences(List<Game> games, ChessLogic chessLogic) {
+        games.forEach(game -> {
+            game.setGameLogic(chessLogic);
+            game.setState(new WaitingState());
+        });
+        return games;
     }
 }

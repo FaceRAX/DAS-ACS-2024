@@ -1,11 +1,18 @@
 package com.das.acs.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Player {
     private String id;
     private String username;
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime registrationDate;
     private int wins;
     private int losses;
@@ -17,6 +24,8 @@ public class Player {
         this.username = username;
         this.registrationDate = LocalDateTime.now();
     }
+
+    public Player() {}
 
     // Statistics method
     public double getWinLossRatio() {

@@ -1,5 +1,6 @@
 package com.das.acs.controller;
 
+import com.das.acs.model.ChessFacade;
 import com.das.acs.model.Move;
 import com.das.acs.model.dto.MoveRequest;
 import com.das.acs.service.MoveService;
@@ -12,16 +13,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/games/{gameId}/moves")
 public class MoveController {
+    private final ChessFacade chessFacade;
 
     @Autowired
-    private MoveService moveService;
+    public MoveController(ChessFacade chessFacade) {
+        this.chessFacade = chessFacade;
+    }
 
     @PostMapping
     public ResponseEntity<Void> addMove(
             @PathVariable String gameId,
             @RequestBody MoveRequest request
     ) {
-        moveService.addMoveToGame(gameId, request.getUci(), request.getPlayerId());
+        chessFacade.makeMove(gameId, request.getUci());
         return ResponseEntity.ok().build();
     }
 
@@ -31,7 +35,7 @@ public class MoveController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit
     ) {
-        List<Move> moves = moveService.getMovesForGame(gameId, page, limit);
+        List<Move> moves = chessFacade.getMoves(gameId, page, limit);
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(moves.size()))
                 .body(moves);

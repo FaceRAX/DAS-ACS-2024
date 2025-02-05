@@ -4,7 +4,9 @@ import com.das.acs.model.Game;
 import com.das.acs.model.Move;
 import com.das.acs.model.Player;
 import com.das.acs.util.ChessLogic;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
+@JsonTypeName("TIMEOUT")
 public class TimeoutState implements GameState {
     private final Player timedOutPlayer;
 

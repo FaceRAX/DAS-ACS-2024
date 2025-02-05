@@ -5,6 +5,7 @@ import com.das.acs.model.Game;
 import com.das.acs.model.Move;
 import com.das.acs.model.Player;
 import com.das.acs.model.state.CheckmateState;
+import com.das.acs.model.state.StalemateState;
 import com.das.acs.repository.GameRepository;
 import com.das.acs.repository.PlayerRepository;
 import com.das.acs.util.ChessLogic;
@@ -33,29 +34,28 @@ public class MoveService {
         this.chessLogic = chessLogic;
     }
 
-    public void addMoveToGame(String gameId, String uci, String playerId) {
+    public void addMoveToGame(String gameId, String uci) {
         Game game = gameRepository.findById(gameId);
-        Player player = playerRepository.findById(playerId)
-                .orElseThrow(() -> new IllegalArgumentException("Player not found: " + playerId));
+        Player player = game.getCurrentPlayerTurn();
 
         String currentFEN = game.getCurrentFEN();
         if (!chessLogic.validateMove(currentFEN, uci)) {
             throw new IllegalArgumentException("Invalid move: " + uci);
         }
 
-        try {
-            String newFEN = chessLogic.applyMoveToFEN(currentFEN, uci);
-            Move move = new Move(uci, player);
-            game.getMoves().add(move);
-            game.setCurrentFEN(newFEN);
-            gameRepository.save(game);
+        /*String newFEN = chessLogic.applyMoveToFEN(currentFEN, uci);
+        Move move = new Move(uci, player);
+        game.getMoves().add(move);
+        game.setCurrentFEN(newFEN);
+        gameRepository.save(game);
 
-            if (chessLogic.isCheckmate(newFEN)) {
-                game.setState(new CheckmateState());
-            }
-        } catch (IOException e) {
-            throw new ChessEngineException("Failed to apply move: " + uci, e);
-        }
+        if (chessLogic.isCheckmate(newFEN)) {
+            game.setState(new CheckmateState());
+        }else if (chessLogic.isStalemate(newFEN)) {
+            game.setState(new StalemateState());
+        }*/
+        game.addMove(new Move(uci, player));
+        gameRepository.save(game);
     }
 
     public List<Move> getMovesForGame(String gameId, int page, int limit) {

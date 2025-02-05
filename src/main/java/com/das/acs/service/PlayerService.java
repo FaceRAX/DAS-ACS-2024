@@ -42,4 +42,8 @@ public class PlayerService {
     public Optional<Player> getPlayerById(String playerId) {
         return playerRepository.findById(playerId);
     }
+
+    public Player getPlayerByUsername(String username) {
+        return playerRepository.findPlayerByUsername(username);
+    }
 }

@@ -3,7 +3,9 @@ package com.das.acs.model.state;
 import com.das.acs.model.Game;
 import com.das.acs.model.Move;
 import com.das.acs.util.ChessLogic;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
+@JsonTypeName("STALEMATE")
 public class StalemateState implements GameState {
     @Override
     public void handleMove(Game game, Move move, ChessLogic chessLogic) {

@@ -32,6 +32,14 @@ public class PlayerRepository {
         return save(newPlayer);
     }
 
+    public Player findPlayerByUsername(String username) {
+        Optional<Player> existing = players.values().stream()
+                .filter(p -> p.getUsername().equalsIgnoreCase(username))
+                .findFirst();
+
+        return existing.orElse(null);
+    }
+
     public Optional<Player> findById(String playerId) {
         return Optional.ofNullable(players.get(playerId));
     }

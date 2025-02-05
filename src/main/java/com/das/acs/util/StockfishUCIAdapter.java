@@ -68,6 +68,18 @@ public class StockfishUCIAdapter {
         return bestMove.contains("(none)"); // Stockfish returns "bestmove (none)" for checkmate
     }
 
+    public boolean isStalemate(String fen) throws IOException {
+        // Get all legal moves for the current position
+        List<String> legalMoves = getLegalMoves(fen);
+
+        // If there are no legal moves, check if it's not checkmate
+        if (legalMoves.isEmpty()) {
+            return !isCheckmate(fen);
+        }
+
+        return false;
+    }
+
     public List<String> getLegalMoves(String fen) throws IOException {
         sendCommand("position fen " + fen);
         sendCommand("go perft 1");

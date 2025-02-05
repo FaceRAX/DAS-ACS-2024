@@ -2,13 +2,13 @@ package com.das.acs.model.dto;
 
 public class MoveRequest {
     private String uci;       // Move in UCI
-    private String playerId;  // ID of the player making the move
+//    private String playerId;  // ID of the player making the move
 
     public MoveRequest() {}
 
-    public MoveRequest(String uci, String playerId) {
+    public MoveRequest(String uci) {
         this.uci = uci;
-        this.playerId = playerId;
+//        this.playerId = playerId;
     }
 
     public String getUci() {
@@ -19,11 +19,11 @@ public class MoveRequest {
         this.uci = uci;
     }
 
-    public String getPlayerId() {
-        return playerId;
-    }
-
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId;
-    }
+//    public String getPlayerId() {
+//        return playerId;
+//    }
+//
+//    public void setPlayerId(String playerId) {
+//        this.playerId = playerId;
+//    }
 }

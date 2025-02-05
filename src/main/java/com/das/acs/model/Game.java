@@ -5,6 +5,7 @@ import com.das.acs.model.state.InProgressState;
 import com.das.acs.model.state.WaitingState;
 import com.das.acs.util.ChessLogic;
 import com.das.acs.util.PGNBuilder;
+import com.fasterxml.jackson.annotation.*;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -12,16 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Game {
-    private final String id;
-    private final Player playerWhite;
-    private final Player playerBlack;
-    private final List<Move> moves;
+    private String id;
+    private Player playerWhite;
+    private Player playerBlack;
+    private List<Move> moves;
     private String currentFEN;
     private GameState state;
-    private final LocalDateTime startTime;
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime startTime;
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime endTime;
-    private final ChessLogic chessLogic;
+    private ChessLogic chessLogic;
 
     // Builder Pattern: Use GameBuilder to construct
     Game(Player playerWhite, Player playerBlack, ChessLogic chessLogic) {
@@ -35,11 +39,14 @@ public class Game {
         this.chessLogic = chessLogic;
     }
 
+    public Game(){}
+
     // Called when both players join
-    public void startGame() {
+    public Game startGame() {
         if (playerWhite != null && playerBlack != null) {
             setState(new InProgressState());
         }
+        return this;
     }
 
     // Delegate move handling to the current state
@@ -50,6 +57,18 @@ public class Game {
     public String exportPGN() {
         // Builder Pattern: Use PGNBuilder to generate PGN string
         return new PGNBuilder(this).build();
+    }
+
+    public void setGameLogic(ChessLogic chessLogic) {
+        this.chessLogic = chessLogic;
+    }
+
+    public void setPlayerWhite(Player playerWhite) {
+        this.playerWhite = playerWhite;
+    }
+
+    public void setPlayerBlack(Player playerBlack) {
+        this.playerBlack = playerBlack;
     }
 
     public String getCurrentFEN() {
@@ -70,6 +89,17 @@ public class Game {
     }
 
     // Getters
+    public Player getCurrentPlayerTurn() {
+        String[] fenParts = this.currentFEN.split(" ");
+        if (fenParts.length < 2) {
+            throw new IllegalStateException("Invalid FEN format");
+        }
+
+        String activeColor = fenParts[1];
+        return activeColor.equalsIgnoreCase("w")
+                ? this.playerWhite
+                : this.playerBlack;
+    }
     public Player getPlayerWhite() { return playerWhite; }
     public Player getPlayerBlack() { return playerBlack; }
     public GameState getState() { return state; }

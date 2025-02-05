@@ -11,6 +11,8 @@ import com.das.acs.repository.GameRepository;
 import com.das.acs.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,16 +46,29 @@ public class GameService {
         }
     }
 
+    public Game startGame(String gameId) {
+        return gameRepository.findById(gameId).startGame();
+    }
+
     public Game getGameById(String gameId) {
         return gameRepository.findById(gameId);
     }
 
     public List<Game> getFilteredGames(String status, String playerId, int page, int limit) {
+
         List<Game> games = gameRepository.findAll();
-        return new GameFilterChain()
+
+        List<Game> filteredGames = new GameFilterChain()
                 .addFilter(new StatusFilter(status))
                 .addFilter(new PlayerFilter(playerId))
-                .execute(games)
-                .subList(page * limit, (page + 1) * limit);
+                .execute(games);
+
+        int fromIndex = page * limit;
+        int toIndex = Math.min((page + 1) * limit, filteredGames.size());
+
+        if (fromIndex >= filteredGames.size() || fromIndex >= toIndex) {
+            return Collections.emptyList();
+        }
+        return filteredGames.subList(fromIndex, toIndex);
     }
 }

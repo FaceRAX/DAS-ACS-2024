@@ -4,7 +4,9 @@ import com.das.acs.model.Game;
 import com.das.acs.model.Move;
 import com.das.acs.model.Player;
 import com.das.acs.util.ChessLogic;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
+@JsonTypeName("RESIGNED")
 public class ResignedState implements GameState {
     private final Player resignedPlayer;
 
